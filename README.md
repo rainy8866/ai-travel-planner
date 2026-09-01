@@ -15,6 +15,29 @@
 
 Python · Streamlit · DeepSeek API · 高德地图 API · folium · 天地图
 
+## 架构与数据流
+
+```mermaid
+flowchart LR
+    U[用户输入<br/>城市/天数/标签/时段/节奏] --> P0[Prompt 构建器]
+    P0 --> LLM[DeepSeek<br/>生成候选店名]
+    LLM --> AMAP[高德 POI<br/>反查验证入库]
+    AMAP --> DEDUP[四层去重<br/>给出真实候选池]
+    DEDUP --> SEL[用户勾选<br/>+限标签自动补缺]
+    SEL --> CLU[地理聚类分天<br/>同区县优先]
+    CLU --> ROUTE[Haversine 直线距离<br/>贪心最近邻排序]
+    ROUTE --> RULES[规则引擎<br/>时段容量/开放时间]
+    RULES --> OUT[结果页<br/>行程 + 天地图渲染]
+
+    FAIL{{"API 异常"}} -.自动降级.-> DEMO[演示模式假数据]
+
+    style AMAP fill:#fff3cd
+    style DEDUP fill:#fff3cd
+    style DEMO fill:#f8d7da
+```
+
+> 防幻觉关键：候选 POI **一律先由大模型生成店名，再经高德反查验证入库**才进入候选池；排序与时段由规则算法完成，大模型在最终环节仅做排版，无权新增地点。
+
 ## 快速开始
 
 > 需要自行申请三个 API Key：高德 Web 服务 Key、DeepSeek API Key、天地图浏览器端 Key。
@@ -61,6 +84,11 @@ travel-planner/
 ├── ui/                    # 输入页 / 候选选择页 / 结果页
 └── fallback/              # API 降级演示模式
 ```
+
+## 注意事项
+
+- 详细部署与 Key 申请、故障排查见 [`docs/DEPLOY.md`](docs/DEPLOY.md)。
+- MIT License，见 [LICENSE](LICENSE)。
 
 ## 免责声明
 
