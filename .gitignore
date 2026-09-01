@@ -1,0 +1,28 @@
+# ===== 敏感信息 & 私密文件（绝不上传） =====
+.env
+.env.*
+!.env.example
+.env.example.*
+*.local
+log/                      # 运行日志（可能含路径等）
+*.log
+
+# ===== 个人简历（隐私，绝不公开） =====
+简历*.md
+简历*.txt
+*简历*.*
+
+# ===== Python 运行时产物 =====
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ===== 编辑器 / 系统 =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
